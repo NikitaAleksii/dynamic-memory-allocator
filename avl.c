@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <stddef.h>
+#include "avl.h"
 
 // Free block of memory.
 struct free_block
