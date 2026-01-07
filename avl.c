@@ -3,7 +3,6 @@
  *  to track FREE memory blocks for a custom malloc/free allocator.
 */
 
-
 #include <stdio.h>
 #include <stddef.h>
 
@@ -107,34 +106,47 @@ struct free_block* rotate_right(struct free_block* root) {
  * Returns:
  *   Pointer to the root of the subtree after insertion.
  */
-
 struct free_block* insert(struct free_block* root, struct free_block* memoryBlock){
     if (root == NULL) {
         root = memoryBlock;
         return root;
     }
 
+    // Normal BST insertion 
     if (cmp(memoryBlock, root) < 0) {
         root->left_block = insert(root->left_block, memoryBlock);
     } else {
         root->right_block = insert(root->right_block, memoryBlock);
     }
 
+    // Update height
     root->height = max(height(root->left_block), height(root->right_block)) + 1;
 
+    // Get balance of the memory block to check if it is unbalanced
     int balance = getBalance(root);
 
+    // Left-Left
     if (balance < -1 && getBalance(root->left_block) < 0){
         return rotate_right(root);
-    } else if (balance > 1 && getBalance(root->right_block) > 0){
+    } 
+    // Right-Right
+    else if (balance > 1 && getBalance(root->right_block) > 0){
         return rotate_left(root);
-    } else if (balance < -1 && getBalance(root->left_block) > 0){
+    } 
+    // Left-Right
+    else if (balance < -1 && getBalance(root->left_block) > 0){
         root->left_block = rotate_left(root->left_block);
         return rotate_right(root);
-    } else if (balance > 1 && getBalance(root->right_block) < 0){
+    } 
+    // Right-Left
+    else if (balance > 1 && getBalance(root->right_block) < 0){
         root->right_block = rotate_right(root->right_block);
         return rotate_left(root);
     }
 
     return root;
+}
+
+struct free_block remove(struct free_block root, struct free_block memoryBlock){
+
 }
