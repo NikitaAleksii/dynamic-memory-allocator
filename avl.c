@@ -6,9 +6,6 @@
 #include <stdio.h>
 #include <stddef.h>
 
-// Root of an AVL tree of free blocks
-struct free_block *base = NULL;
-
 // Free block of memory.
 struct free_block
 {
@@ -279,4 +276,44 @@ struct free_block *delete(struct free_block *root, struct free_block *memoryBloc
     }
 
     return root;
+}
+
+/*
+ * Finds the best-fit free block in the AVL tree: the smallest block whose size
+ * is >= `size`.
+ *
+ * Parameters:
+ *   root - Pointer to the root of a tree.
+ *   size - Requested block size.
+ *
+ * Returns:
+ *   Pointer to the best-fit free block, or NULL if no free block is large enough.
+ */
+
+struct free_block *best_fit(struct free_block *root, size_t size)
+{
+    struct free_block *best = NULL;
+
+    while (root)
+    {
+        if (root->size >= size)
+        {
+            best = root;
+            root = root->left_block;
+        }
+        else
+        {
+            root = root->right_block;
+        }
+    }
+    return best;
+}
+
+// Removes best-fit memory block.
+struct free_block *pop_best_fit(struct free_block *root, size_t size)
+{
+    struct free_block *b = best_fit(root, size);
+    if (b)
+        root = delete_block(root, b);
+    return b;
 }
