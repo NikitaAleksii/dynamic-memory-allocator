@@ -5,17 +5,7 @@
 
 #include <stdio.h>
 #include <stddef.h>
-#include "avl.h"
-
-// Free block of memory.
-struct free_block
-{
-    size_t size;
-    int height;
-
-    struct free_block *left_block;
-    struct free_block *right_block;
-};
+#include "./include/avl.h"
 
 // Compares blocks by size; tie-breaks by address to ensure a strict total order.
 // a > b returns 1      a < b return -1
@@ -311,10 +301,10 @@ struct free_block *best_fit(struct free_block *root, size_t size)
 }
 
 // Removes best-fit memory block.
-struct free_block *pop_best_fit(struct free_block *root, size_t size)
+struct free_block *pop_best_fit(struct free_block **root, size_t size)
 {
-    struct free_block *b = best_fit(root, size);
+    struct free_block *b = best_fit(*root, size);
     if (b)
-        root = delete_block(root, b);
+        *root = delete(*root, b);
     return b;
 }
