@@ -29,7 +29,7 @@ void write_size(void *ptr, size_t size)
 {
     *(size_t *)ptr = size;
 }
-// Returns total block size stored in a header/footer word 
+// Returns total block size stored in a header/footer word
 size_t get_size(void *ptr)
 {
     return get_value(ptr) & SIZE_MASK;
@@ -46,19 +46,25 @@ void *get_ftrp(void *data)
     return (char *)data + get_size(get_hdrp(data)) - FOOTER_SIZE - HEADER_SIZE;
 }
 
-int get_alloc(void *data){
+int get_alloc(void *data)
+{
     return get_value(get_hdrp(data)) & 1;
 }
 
-void* get_next(void* data){
-    return (char*)data + get_size(get_hdrp(data));
+void *get_next(void *data)
+{
+    return (char *)data + get_size(get_hdrp(data));
 }
-void* get_prev(void* data){
-    return (char*)data - get_size((char*)data - HEADER_SIZE - FOOTER_SIZE);
+void *get_prev(void *data)
+{
+    return (char *)data - get_size((char *)data - HEADER_SIZE - FOOTER_SIZE);
 }
 
-extern struct free_block *free_root; 
+extern struct free_block *free_root;
 
-void* my_malloc(size_t size);
+void *heap_lo();
+void *heap_hi();
 
-#endif 
+void *my_malloc(size_t size);
+
+#endif

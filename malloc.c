@@ -8,6 +8,12 @@
 // Root of an AVL tree of free memory blocks
 struct free_block *free_root = NULL;
 
+static void *g_heap_lo = NULL;
+static void *g_heap_hi = NULL;
+
+void *heap_lo() { return g_heap_lo; }
+void *heap_hi() { return g_heap_hi; }
+
 /*
  * Extends the heap using sbrk() and creates a single allocated block
  *
@@ -30,6 +36,10 @@ void *allocate_heap(size_t size)
         perror("sbrk failed");
         return NULL;
     }
+
+    if (!g_heap_lo)
+        g_heap_lo = allocated_block;
+    g_heap_hi = sbrk(0);
 
     allocated_block = (char *)allocated_block + HEADER_SIZE;
 
@@ -84,7 +94,7 @@ void *split_block(struct free_block *free_block, size_t size)
 /*
  * Allocates a block with at least `size` bytes of payload.
  *
- * The allocator rounds up the requested size to include header/footer 
+ * The allocator rounds up the requested size to include header/footer
  * and alignment, then searches the AVL tree for a best-fit free block.
  * If found, the block may be split; otherwise the entire block is allocated.
  * If no suitable free block exists, the heap is extended via sbrk().
@@ -115,7 +125,7 @@ void *my_malloc(size_t size)
         return allocate_heap(block_size);
     }
 
-    // Check if the size of the remaining block is enough 
+    // Check if the size of the remaining block is enough
     if (best_block->size - block_size >= MIN_BLOCK_SIZE)
     {
         return split_block(best_block, block_size);
