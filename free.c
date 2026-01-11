@@ -3,9 +3,9 @@
 #include <unistd.h>
 
 #include "./include/malloc.h"
-#include "./include/avl.h"
 #include "./include/free.h"
 
+// Checks if a pointer is in heap
 int in_heap(void *ptr)
 {
     return ptr >= heap_lo() && ptr < heap_hi();
@@ -69,19 +69,23 @@ void my_free(void *data)
     if (data == NULL)
         return;
 
+    // Marks the memory block as free
     size_t size = get_size(get_hdrp(data));
     size_t packed = size & ~((size_t)1);
     write_size(get_hdrp(data), packed);
     write_size(get_ftrp(data), packed);
 
+    // Merge adjacent free memory blocks
     void *block = merge_blocks(data);
 
+    // Create a free memory block for an AVL tree
     struct free_block *node = (struct free_block *)block;
     node->size = get_size(get_hdrp(block));
     node->height = 1;
     node->left_block = NULL;
     node->right_block = NULL;
 
+    // Insert the memory block in the AVL tree
     free_root = insert(free_root, node);
     return;
 }

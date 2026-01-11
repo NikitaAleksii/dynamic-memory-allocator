@@ -2,7 +2,6 @@
 #include <stddef.h>
 #include <unistd.h>
 
-#include "./include/avl.h"
 #include "./include/malloc.h"
 
 // Root of an AVL tree of free memory blocks
