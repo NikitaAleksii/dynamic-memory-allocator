@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stddef.h>
-#include <unistd.h>
 
 #include "./include/malloc.h"
 #include "./include/free.h"
@@ -8,13 +7,23 @@
 // Checks if a pointer is in heap
 int in_heap(void *ptr)
 {
+    if (ptr == NULL)
+        return 0;
     return ptr >= heap_lo() && ptr < heap_hi();
 }
 
 void *merge_blocks(void *block)
 {
-    void *prev = get_prev(block);
-    void *next = get_next(block);
+    void *prev = NULL;
+    void *next = NULL;
+    if (((char *)block - HEADER_SIZE) != heap_lo())
+    {
+        prev = get_prev(block);
+    }
+    if (block != heap_hi())
+    {
+        next = get_next(block);
+    }
 
     int prev_free = in_heap(prev) && (get_alloc(prev) == 0);
     int next_free = in_heap(next) && (get_alloc(next) == 0);

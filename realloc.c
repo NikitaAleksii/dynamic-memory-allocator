@@ -1,8 +1,8 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "malloc.h"
-#include "free.h"
+#include "./include/malloc.h"
+#include "./include/free.h"
 
 /*
  * Resizes an allocated block.
@@ -12,7 +12,7 @@
  * - If the requested size fits in the current block, the block is kept in place.
  *   If the leftover space is large enough to form a valid free block, the block is
  *   split and the remainder is freed.
- * - If the requested size does not fit, allocates a new block, copies the old payload, 
+ * - If the requested size does not fit, allocates a new block, copies the old payload,
  *   frees the old block, and returns the new block.
  *
  * Parameters:

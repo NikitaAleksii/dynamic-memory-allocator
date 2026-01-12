@@ -15,7 +15,13 @@ int cmp(struct free_block *a, struct free_block *b)
         return -1;
     if (a->size > b->size)
         return 1;
-    return (a < b) ? -1 : 1; // tie-breaker by address
+
+    // tie-breaker by address
+    if ((uintptr_t)a < (uintptr_t)b)
+        return -1;
+    if ((uintptr_t)a > (uintptr_t)b)
+        return 1;
+    return 0;
 }
 
 // Returns the AVL height of the node.
