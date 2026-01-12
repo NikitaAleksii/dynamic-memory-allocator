@@ -1,3 +1,33 @@
+# Table of Contents
+[AVL Tree](#avl-tree) \
+[Malloc Implementation](#malloc) \
+[Free Implementation](#free) \
+[Realloc Implementation](#realloc) \
+[Calloc Implementation](#calloc)
+
+# Introduction
+Dynamic memory allocation is the process of managing memory at runtime rather than at compile time.
+It allows programs to allocate memory on the heap when the exact amount of required storage is not
+known in advance. This approach provides flexibility and improves memory utilization in applications
+with dynamic or unpredictable memory requirements.
+
+In this project, I implemented a custom dynamic memory allocator that provides functionality similar
+to standard library routines, including `malloc`, `free`, `realloc`, and `calloc`. The allocator
+manages heap memory manually and demonstrates fundamental techniques used in real-world memory
+management systems.
+
+## Clone the Repository
+```bash
+git clone <https://github.com/NikitaAleksii/dynamic-memory-allocator.git>
+```
+
+## Compile Source Files
+```bash
+clang -I./include avl.c malloc.c free.c realloc.c calloc.c main.c -o allocator -Wno-deprecated-declarations
+```
+On macOS, sbrk is deprecated, so the **-Wno-deprecated-declarations flag** suppresses warnings.
+
+<a id="avl-tree"></a>
 ## `avl.c` — Free-Block Memory AVL Tree
 
 `avl.c` implements an AVL (self-balancing BST) used by the allocator to manage **free memory blocks** efficiently.  
@@ -21,7 +51,7 @@ The allocator uses this tree to find a **best-fit** block (the smallest free blo
 - **Balance factor convention:**  
   `balance(node) = height(node->right) - height(node->left)`
 
-### Functions
+### Interface
 
 - `struct free_block *insert(struct free_block *root, struct free_block *memoryBlock);`  
   Inserts `memoryBlock` into the AVL tree and returns the new root.
@@ -35,6 +65,7 @@ The allocator uses this tree to find a **best-fit** block (the smallest free blo
 - `struct free_block *pop_best_fit(struct free_block **root, size_t size);`  
   Finds and removes a best-fit block, returning the updated root.
 
+<a id="malloc"></a>
 ## `malloc.c` — Custom Malloc Implementation
 
 `malloc.c` implements a custom dynamic memory allocator (`my_malloc`).
@@ -74,6 +105,7 @@ When no suitable free block exists, the heap is extended using `sbrk()`.
 
 - `void *my_malloc(size_t size);`
 
+<a id="free"></a>
 ## `free.c` — Custom Dynamic Memory Deallocation
 
 `free.c` implements memory deallocation for blocks previously allocated by the custom dynamic memory allocator.
@@ -100,6 +132,7 @@ Free memory blocks are tracked in an **AVL tree**, enabling efficient lookup and
 
 - `void my_free(void *data);`
 
+<a id="realloc"></a>
 ## `realloc.c` — Custom Dynamic Memory Reallocation
 
 `realloc.c` implements memory reallocation for blocks previously allocated by the custom dynamic memory allocator.
@@ -124,6 +157,7 @@ It adjusts the size of allocated memory blocks to match a new requested payload 
 
 - `void *my_realloc(void *ptr, size_t new_payload);`
 
+<a id="calloc"></a>
 ## `calloc.c` — Custom Zero-Initialized Memory Allocation
 
 `calloc.c` implements zero-initialized memory allocation using the custom dynamic
